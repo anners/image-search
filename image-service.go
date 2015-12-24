@@ -14,6 +14,10 @@ type queryParams struct {
 	query string
 }
 
+func health(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "I am alive!")
+}
+
 func (s queryParams) createSeachURL() string {
 	
 	searchURL := []string{"https://www.googleapis.com/customsearch/v1?"}
@@ -58,6 +62,7 @@ func image (w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	http.HandleFunc("/", health)
 	http.HandleFunc("/image", image)
 	http.ListenAndServe(":8888", nil)
 }
