@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	_"net/url"
+	"os"
 )
 
 
@@ -23,6 +24,14 @@ func (s queryParams) createSeachURL() string {
 	// add your google api keys
 	query["cx"] = ""
 	query["key"] = ""
+	// override defaults
+	if os.Getenv("GOOGLE_CX") != "" {
+		query["cx"] = os.Getenv("GOOGLE_CX")
+	}
+	if os.Getenv("GOOGLE_KEY") != "" {
+		query["key"] = os.Getenv("GOOGLE_KEY")
+	}
+
 
 	for k, v := range query {
 		searchURL = append(searchURL, k,"=",v,"&")
@@ -50,5 +59,5 @@ func image (w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/image", image)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8888", nil)
 }
