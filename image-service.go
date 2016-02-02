@@ -3,6 +3,7 @@ package main
 import (
 	_"fmt"
 	"strings"
+	"io"
 	"io/ioutil"
 	"net/http"
 	_"net/url"
@@ -46,7 +47,7 @@ func (s queryParams) createSeachURL() string {
 }
 
 func image (w http.ResponseWriter, r *http.Request) {
-	//iamge?search=XXXX
+	//image?search=XXXX
 	query := queryParams{r.URL.Query().Get("search")}
 	imageSearch := query.createSeachURL()
 
@@ -54,7 +55,9 @@ func image (w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-
+	if request.StatusCode != http.StatusOK {
+		panic("http status code not 200")
+	} 
 	defer request.Body.Close()
 	content, _ := ioutil.ReadAll(request.Body)
 	w.Header().Set("Content-Type", "text/html")
