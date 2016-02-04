@@ -60,7 +60,7 @@ func image (w http.ResponseWriter, r *http.Request) {
 	} 
 	defer request.Body.Close()
 	content, _ := ioutil.ReadAll(request.Body)
-	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(content))
 }
 
