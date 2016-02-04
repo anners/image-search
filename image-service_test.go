@@ -5,13 +5,25 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 )
 
+var ( 
+	response *httptest.ResponseRecorder
+)
+
+func setup() {
+	response = httptest.NewRecorder()
+}
+
+func teardown() {
+	response.Flush()
+}
+
 func TestHealth(t *testing.T) {
+	setup()
+	defer teardown()
 	request, _ := http.NewRequest("GET", "/", nil)
-	response := httptest.NewRecorder()
 
 	health(response, request)
 
@@ -23,24 +35,24 @@ func TestHealth(t *testing.T) {
 }
 
 func TestImageReturnsJSON(t *testing.T) {
+	setup()
+	defer teardown()
 	request, _ := http.NewRequest("GET", "/image?search=clouds", nil)
-	response := httptest.NewRecorder()
 
 	image(response, request)
 
-	ct := response.HeaderMap["Content-Type"][0]
-	if !strings.EqualFold(ct, "application/json") {
-		t.Fatalf("Content-Type does not equal 'application/json'")
-	}
+	ct := response.Header().Get("Content-Type")
+	assert.Equal(t, ct, "application/json", "Content-Type should be json")
 }
 
 func TestImageSearch(t *testing.T) {
+	setup()
+	defer teardown()
 	request, _ := http.NewRequest("GET", "/image?search=dogs", nil)
-	response := httptest.NewRecorder()
 
 	image(response, request)
 
-	assert.Contains(t, response.Body.String(), "link")
+	assert.Contains(t, response.Body.String(), "link", "body should contain link:")
 }
 
 func TestCreateSeachURL(t *testing.T) {
