@@ -1,4 +1,4 @@
-FROM golang:1.5
+FROM golang:1.10
 
 MAINTAINER Ann Wallace annerz@gmail.com
 
